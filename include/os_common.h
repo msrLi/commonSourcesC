@@ -52,7 +52,92 @@
 #include <errno.h>
 
 #include "os_typedef.h"
+#include "os_fault.h"
 #include "os_module.h"
 #include "os_log.h"
+
+#define SUCCEED(rc)                 ((rc) == NO_ERROR)
+#define ISNULL(ptr)                 ((ptr) == NULL)
+#define FAILED(rc)                  (!SUCCEED(rc))
+#define NOTNULL(ptr)                (!ISNULL(ptr))
+#define POSITIVE_NUM(num)           ((num) > 0)
+#define NEGITIVE_NUM(num)           ((num) < 0)
+#define ISZERO(num)                 ((num) == 0)
+#define ARRAYSIZE(array)            (sizeof(array) / sizeof(array[0]))
+#define INVALIDNUM                  (-1)
+#define EQUALPTR(a, b)              ((a) == (b))
+#define MAX(a, b)                   ((a) > (b) ? (a) : (b))
+#define MIN(a, b)                   ((a) < (b) ? (a) : (b))
+#define RESETRESULT(rc)             ((rc) = NO_ERROR)
+#define RETURNIGNORE(rc, ignore)    ((rc) & (~(ignore)))
+#define SUCCEEDIGNORE(rc, ignore)   (SUCCEED(rc) || ((rc) == (ignore)))
+#define EPSINON                     (1e-7)
+#define EQUALFLOAT(a, b)            (fabsf((a) - (b)) < EPSINON)
+
+#define SECURE_FREE(ptr)                         \
+    do {                                         \
+        if (!ISNULL(ptr)) {                      \
+            Free(ptr);                           \
+            (ptr) = NULL;                        \
+        }                                        \
+    } while(0)
+
+#define SECURE_DELETE(obj)                       \
+    do {                                         \
+        if (!ISNULL(obj)) {                      \
+            delete(obj);                         \
+            (obj) = NULL;                        \
+        }                                        \
+    } while(0)
+
+#define COMPARE_SAME_STRING(LHS, RHS)            \
+    ({                                           \
+        bool _result = true;                     \
+        if (NOTNULL(LHS) && NOTNULL(RHS)) {      \
+            _result &= !strcmp(LHS, RHS);        \
+        } else if (ISNULL(LHS) && ISNULL(RHS)) { \
+        } else {                                 \
+            _result = false;                     \
+        }                                        \
+        _result;                                 \
+    })
+
+#define COMPARE_SAME_LEN_STRING(LHS, RHS, len)   \
+    ({                                           \
+        bool _result = true;                     \
+        if (NOTNULL(LHS) && NOTNULL(RHS)) {      \
+            _result &= !strncmp(LHS, RHS, len);  \
+        } else if (ISNULL(LHS) && ISNULL(RHS)) { \
+        } else {                                 \
+            _result = false;                     \
+        }                                        \
+        _result;                                 \
+    })
+
+#define COMPARE_SAME_DATA(LHS, RHS, SIZE)        \
+    ({                                           \
+        bool _result = true;                     \
+        if (NOTNULL(LHS) && NOTNULL(RHS)) {      \
+            _result &= !memcmp(LHS, RHS, SIZE);  \
+        } else if (ISNULL(LHS) && ISNULL(RHS)) { \
+        } else {                                 \
+            _result = false;                     \
+        }                                        \
+        _result;                                 \
+    })
+
+#ifndef offsetof
+#define offsetof(TYPE, MEMBER)                   \
+    ((size_t) &((TYPE *)0)->MEMBER)
+#endif
+
+#define container_of(ptr, type, member) ({                 \
+        const typeof(((type *)0)->member) *__mptr = (ptr); \
+        (type *)((char *)__mptr - offsetof(type, member)); \
+    })
+
+#define ALIGN_LEN_TO_SIZE(len,size) ({                     \
+        (((len) + (size) - 1) & ~((size) - 1)); });
+
 
 #endif //__OS_COMMON_H__
