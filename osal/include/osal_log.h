@@ -22,8 +22,7 @@ extern "C" {
 ******************************************************************************/
 
 /* 日志级别枚举 */
-enum
-{
+enum {
     E_LOG_LEVEL_PANNIC = 0,       /* 崩溃日志， 级别最高 */
     E_LOG_LEVEL_FATAL,            /* 致命性错误日志 */
     E_LOG_LEVEL_ERROR,            /* 错误日志，需要解决 */
@@ -42,104 +41,111 @@ enum
 #define OSAL_LOG_VERBOSE    (0x500)
 #define OSAL_LOG_DEBUG      (0x600)
 
-#define OSAL_LOG_Error(fmt, args...)                             \
-do {                                                            \
-    OSAL_LOG(OSAL_LOG_ERROR,                                      \
-            "at %s:%d, %s()\n",                                 \
-            __FILE__, __LINE__, __func__);                      \
-    OSAL_LOG(OSAL_LOG_ERROR, fmt, ##args);                        \
-} while(0)
+#ifndef DISABLE_LOGn
+#define LOGP(module, fmt, args...) PLOGP(module, fmt, ##args)
+#define LOGF(module, fmt, args...) PLOGF(module, fmt, ##args)
+#define LOGE(module, fmt, args...) PLOGE(module, fmt, ##args)
+#define LOGW(module, fmt, args...) PLOGW(module, fmt, ##args)
+#define LOGI(module, fmt, args...) PLOGI(module, fmt, ##args)
+#define LOGV(module, fmt, args...) PLOGV(module, fmt, ##args)
+#define LOGD(module, fmt, args...) PLOGD(module, fmt, ##args)
+#if 0
+#define LOGPIF(module, fmt, args...) PLOGPIF(module, fmt, ##args)
+#define LOGFIF(module, fmt, args...) PLOGFIF(module, fmt, ##args)
+#define LOGEIF(module, fmt, args...) PLOGEIF(module, fmt, ##args)
+#define LOGWIF(module, fmt, args...) PLOGWIF(module, fmt, ##args)
+#define LOGIIF(module, fmt, args...) PLOGIIF(module, fmt, ##args)
+#define LOGVIF(module, fmt, args...) PLOGVIF(module, fmt, ##args)
+#define LOGDIF(module, fmt, args...) PLOGDIF(module, fmt, ##args)
+#define ASSERT_LOG(module, cond, fmt, args...) ASSERT_PLOG(module, cond, fmt, ##args)
+#endif
+#else
+#define LOGP(module, fmt, args...)
+#define LOGF(module, fmt, args...)
+#define LOGE(module, fmt, args...)
+#define LOGW(module, fmt, args...)
+#define LOGI(module, fmt, args...)
+#define LOGV(module, fmt, args...)
+#define LOGD(module, fmt, args...)
+#if 0
+#define LOGPIF(module, fmt, args...)
+#define LOGFIF(module, fmt, args...)
+#define LOGEIF(module, fmt, args...)
+#define LOGWIF(module, fmt, args...)
+#define LOGIIF(module, fmt, args...)
+#define LOGVIF(module, fmt, args...)
+#define LOGDIF(module, fmt, args...)
+#define ASSERT_LOG(module, cond, fmt, args)
+#endif
+#endif
 
-#define OSAL_LOG_Warning(fmt, args...)                           \
-do {                                                            \
-    OSAL_LOG(OSAL_LOG_WARNING,                                    \
-            "at %s:%d, %s()\n",                                 \
-            __FILE__, __LINE__, __func__);                      \
-    OSAL_LOG(OSAL_LOG_WARNING, fmt, ##args);                      \
-} while(0)
+#undef PLOGX
+#define PLOGX(module, leavel, fmt, args...)         \
+do {                                                \
+    OSAL_LOG(module, leavel, __FILE__,                \
+            __FUNCTION__, __LINE__, fmt, ##args);   \
+}while(0)
 
-#define OSAL_LOG_Info(fmt, args...)                              \
-do {                                                            \
-    OSAL_LOG(OSAL_LOG_INFO,                                       \
-            "at %s:%d, %s()\n",                                 \
-            __FILE__, __LINE__, __func__);                      \
-    OSAL_LOG(OSAL_LOG_INFO, fmt, ##args);                         \
-} while(0)
+#undef PLOGP
+#define PLOGP(module, fmt, args...)                 \
+do {                                                \
+    PLOGX(module, OSAL_LOG_PANIC, fmt, ##args);     \
+}while(0)
 
-#define OSAL_LOG_Verbose(fmt, args...)                           \
-do {                                                            \
-    OSAL_LOG(OSAL_LOG_VERBOSE,                                    \
-            "at %s:%d, %s()\n",                                 \
-            __FILE__, __LINE__, __func__);                      \
-    OSAL_LOG(OSAL_LOG_VERBOSE, fmt, ##args);                      \
-} while(0)
+#undef PLOGF
+#define PLOGF(module, fmt, args...)                 \
+do {                                                \
+    PLOGX(module, OSAL_LOG_FATAL, fmt, ##args);     \
+}while(0)
 
-#define OSAL_LOG_Debug(fmt, args...)                             \
-do {                                                            \
-    OSAL_LOG(OSAL_LOG_DEBUG,                                      \
-            "at %s:%d, %s()\n",                                 \
-            __FILE__, __LINE__, __func__);                      \
-    OSAL_LOG(OSAL_LOG_DEBUG, fmt, ##args);                        \
-} while(0)
+#undef PLOGE
+#define PLOGE(module, fmt, args...)                 \
+do {                                                \
+    PLOGX(module, OSAL_LOG_ERROR, fmt, ##args);     \
+}while(0)
 
-#define OSAL_CHECK_DEBUG(cond, retval, lable, fmt, args...)      \
-do {                                                            \
-    if(cond) {                                                  \
-        OSAL_LOG(OSAL_LOG_DEBUG, fmt, ##args);                    \
-        ret = retval;                                           \
-        goto lable;                                             \
-    }                                                           \
-} while(0)
+#undef PLOGW
+#define PLOGW(module, fmt, args...)                 \
+do {                                                \
+    PLOGX(module, OSAL_LOG_WARNING, fmt, ##args);   \
+}while(0)
 
-#define OSAL_CHECK_INFO(cond, retval, lable, fmt, args...)       \
-do {                                                            \
-    if(cond) {                                                  \
-        OSAL_LOG(OSAL_LOG_INFO, fmt, ##args);                     \
-        ret = retval;                                           \
-        goto lable;                                             \
-    }                                                           \
-} while(0)
+#undef PLOGI
+#define PLOGI(module, fmt, args...)                 \
+do {                                                \
+    PLOGX(module, OSAL_LOG_INFO, fmt, ##args);      \
+}while(0)
 
-#define OSAL_CHECK_WARNING(cond, retval, lable, fmt, args...)    \
-do {                                                            \
-    if(cond) {                                                  \
-        OSAL_LOG(OSAL_LOG_WARNING,                                \
-                "at %s:%d, %s()\n",                             \
-                __FILE__, __LINE__, __func__);                  \
-        OSAL_LOG(OSAL_LOG_WARNING, fmt, ##args);                  \
-        ret = retval;                                           \
-        goto lable;                                             \
-    }                                                           \
-} while(0)
+#undef PLOGV
+#define PLOGV(module, fmt, args...)                 \
+do {                                                \
+    PLOGX(module, OSAL_LOG_VERBOSE, fmt, ##args);   \
+}while(0)
 
-#define OSAL_CHECK_ERROR(cond, retval, lable, fmt, args...)      \
-do {                                                            \
-    if(cond) {                                                  \
-        OSAL_LOG(OSAL_LOG_ERROR,                                  \
-                "at %s:%d, %s()\n",                             \
-                __FILE__, __LINE__, __func__);                  \
-        OSAL_LOG(OSAL_LOG_ERROR, fmt, ##args);                    \
-        OSAL_LOG(OSAL_LOG_ERROR, "%s() return %d\n",              \
-                __func__, retval);                              \
-        ret = retval;                                           \
-        goto lable;                                             \
-    }                                                           \
-} while(0)
+#undef PLOGD
+#define PLOGD(module, fmt, args...)                 \
+do {                                                \
+    PLOGX(module, OSAL_LOG_DEBUG, fmt, ##args);     \
+}while(0)
+
 
 /* --------------------------------------------------------------------------*/
 /**
- * @brief  OSAL_LOG
- *         核心日志输出函数，实现了网络，本地存储
- *
- * @param[in]  level  日志的级别
- * @param[in]  ...    可变长参数
+ * @brief OSAL_LOG
+ *          核心日志输出函数，实现了网络，本地存储
+ * @param module 模块
+ * @param level  日志的级别
+ * @param file   打印日志所在文件
+ * @param func   打印日志所在函数
+ * @param line   打印日志所在行数
+ * @param ...    可变长参数
  *
  * @return
  *          0 -> 输出正常
- *          1 -> 日志级别超过范围
+ *            -> 志级别超过范围
  */
 /* --------------------------------------------------------------------------*/
-OS_S32 OSAL_LOG(OS_U32 level, OS_S8 *fmt, ...);
+OS_S32 OSAL_LOG(OS_U32 module, OS_U32 level, OS_S8 *file, OS_S8 *func, OS_U32 line, OS_S8 *fmt, ...);
 
 /* --------------------------------------------------------------------------*/
 /**
@@ -199,7 +205,7 @@ OS_S32 OSAL_LOG_Set_Level(OS_U32 level);
  */
 /* --------------------------------------------------------------------------*/
 OS_S32 OSAL_LOG_Register_Callback(void (*callback)(OS_S8 *));
-
+#if 0
 /* --------------------------------------------------------------------------*/
 /**
  * @brief  OSAL_LOG_Wrosal_To_File
@@ -216,7 +222,7 @@ OS_S32 OSAL_LOG_Register_Callback(void (*callback)(OS_S8 *));
  */
 /* --------------------------------------------------------------------------*/
 OS_S32 OSAL_LOG_Wrosal_To_File(OS_S8 *file_name, OS_S8 *format, ...);
-
+#endif
 /* --------------------------------------------------------------------------*/
 /**
  * @brief  OSAL_LOG_API_Test
