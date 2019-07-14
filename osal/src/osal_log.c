@@ -138,6 +138,7 @@ static inline OS_S8 *get_process_name(void)
 
     return gProcess;
 }
+
 /* --------------------------------------------------------------------------*/
 /**
 * @brief __log_vsnprintf
@@ -197,14 +198,16 @@ static inline OS_S8 *log_get_level_str(OS_U32 level)
  * @param[in]  log  需要输出的日志内存指针
  */
 /* --------------------------------------------------------------------------*/
-static void log_default_callback(OS_S8 *fmt, ...)
+static void log_default_callback(const OS_S8 *fmt, ...)
 {
     va_list args;
-    printf("%s %d\n", __func__, __LINE__);
+    OS_S8 buffer[OSAL_LOG_BUF_SIZE ];
+
     va_start(args, fmt);
-    printf(fmt, args);
-    syslog(LOG_INFO, fmt, args);
+    memset(buffer, 0, OSAL_LOG_BUF_SIZE);
+    __log_vsnprintf(buffer, OSAL_LOG_BUF_SIZE, fmt, args);
     va_end(args);
+    syslog(LOG_INFO, "%s", buffer);
 }
 
 /* --------------------------------------------------------------------------*/
@@ -221,6 +224,7 @@ static void log_sprintf(const OS_S8 *fmt, const OS_S8 *process, const OS_S8 *mod
                         const OS_S8 *file, const OS_S8 *func, const OS_U32 line, const char *buf)
 {
     printf(fmt, process, module, levelType, file, func, line, buf);
+    log_default_callback(fmt, process, module, levelType, file, func, line, buf);
     // log_default_callback();
 #if 0
 DO_ECHO:
