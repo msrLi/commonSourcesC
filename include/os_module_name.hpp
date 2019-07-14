@@ -37,7 +37,7 @@ MODULE_SHORT_NAME_T g_module_names[] = {
 
 const OS_S8* OS_Get_Module_Name(OS_U32 module)
 {
-    for (int i = 0; i < sizeof(g_module_names) / sizeof(MODULE_SHORT_NAME_T); i++) {
+    for (OS_U32 i = 0; i < (OS_U32) (sizeof(g_module_names) / sizeof(MODULE_SHORT_NAME_T)); i++) {
         if (EQUALPTR(g_module_names[i].module, module)) {
             return g_module_names[i].name;
         }

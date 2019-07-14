@@ -39,6 +39,6 @@ THIS_LDFLAGS    =
 # User should not modify 
 ###############################################################################
 -include ${PLAT_DIR}/plat.mk
-include ${RULES_DIR}/rule.mk
+include ${RULES_DIR}/rule_mutle.mk
 
 # file end

@@ -49,7 +49,7 @@ static OS_S8 g_log_header_buf[8][64];
 static OS_S8 g_log_str_buf[OSAL_LOG_BUF_SIZE];
 
 /* 输出级别字符串数组 */
-static OS_S8 *g_log_level_str[] = {
+static const OS_S8 *g_log_level_str[] = {
     " < PANIC > ",
     " < FATAL > ",
     " < ERROR > ",
@@ -72,7 +72,7 @@ static OS_S8  gProcess[PATH_MAX] = { '\0' };
 ******************************************************************************/
 static OS_S32 getMaxInvalidId(OS_S8 *text, OS_U32 len)
 {
-    OS_S32 i = 0;
+    OS_U32 i = 0;
 
     for (; i < len; i++) {
         if (!((text[i] == '/') ||
@@ -178,7 +178,7 @@ static inline OS_U32  __log_vsnprintf(OS_S8* pdst, OS_U32 size,
  * @return  要获取的级别字符串前缀
  */
 /* --------------------------------------------------------------------------*/
-static inline OS_S8 *log_get_level_str(OS_U32 level)
+static inline const OS_S8 *log_get_level_str(OS_U32 level)
 {
     OS_U32 index = 0;
 
@@ -298,7 +298,7 @@ OS_S32 OSAL_LOG_Get_Module_Version(OS_U32 *major_version, OS_U32 *minor_version,
  *            -> 志级别超过范围
  */
 /* --------------------------------------------------------------------------*/
-OS_S32 OSAL_LOG(OS_U32 module, OS_U32 level, const OS_S8 *file, const OS_S8 *func, OS_U32 line, OS_S8 *fmt, ...)
+OS_S32 OSAL_LOG(OS_U32 module, OS_U32 level, const OS_S8 *file, const OS_S8 *func, OS_U32 line,const OS_S8 *fmt, ...)
 {
     va_list args;
     OS_S8 buffer[OSAL_LOG_BUF_SIZE];
