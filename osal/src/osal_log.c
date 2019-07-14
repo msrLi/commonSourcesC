@@ -13,7 +13,7 @@
 #include <os_common.h>
 #include <osal_log.h>
 #include <syslog.h>
-#include <os_moudle.h>
+#include "os_module.h"
 
 #define __MODULE_NAME_H__
 #include <os_module_name.hpp>
@@ -26,7 +26,7 @@
 * define & enum
 ******************************************************************************/
 #define OSAL_LOG_BUF_SIZE        (1024)
-
+#define MAX_PROCESS_NAME_LEN     (16)
 /******************************************************************************
 * typedef
 ******************************************************************************/
@@ -70,9 +70,27 @@ static OS_S8  gProcess[PATH_MAX] = { '\0' };
 /******************************************************************************
 * Local function
 ******************************************************************************/
+static OS_S32 getMaxInvalidId(OS_S8 *text, OS_U32 len)
+{
+    OS_S32 i = 0;
+
+    for (; i < len; i++) {
+        if (!((text[i] == '/') ||
+              (text[i] == '.') || (text[i] == '_') ||
+              (text[i] >= '0' && text[i] <= '9') ||
+              (text[i] >= 'A' && text[i] <= 'Z') ||
+              (text[i] >= 'a' && text[i] <= 'z'))) {
+            text[i + 1] = '\0';
+            break;
+        }
+    }
+
+    return i;
+}
 
 static inline OS_S8 *get_process_name(void)
 {
+
     if (gProcess[0] == '\0') {
         pid_t pid = getpid();
         char path[32];
@@ -200,7 +218,7 @@ static void log_default_callback(OS_S8 *fmt, ...)
  */
 /* --------------------------------------------------------------------------*/
 static void log_sprintf(const OS_S8 *fmt, const OS_S8 *process, const OS_S8 *module, const OS_S8 *levelType,
-                        const OS_S8 *file, const OS_S8 *func, const OS_U32 line, const char *buf);
+                        const OS_S8 *file, const OS_S8 *func, const OS_U32 line, const char *buf)
 {
     printf(fmt, process, module, levelType, file, func, line, buf);
     // log_default_callback();
@@ -244,7 +262,7 @@ OS_S32 OSAL_LOG_Get_Module_Version(OS_U32 *major_version, OS_U32 *minor_version,
     /* 参数检查 */
     if ((NULL == major_version) || (NULL == minor_version) || (NULL == build_version)) {
         printf("Invalid argument! (%p, %p, %p)\n", major_version, minor_version, build_version);
-        return OSAL_MODULE_LOG | 1;
+        return MODULE_LOG | 1;
     }
 
     /* 版本打印，便于调试 */
@@ -254,7 +272,7 @@ OS_S32 OSAL_LOG_Get_Module_Version(OS_U32 *major_version, OS_U32 *minor_version,
     ret = sscanf(OSAL_LOG_MODULE_VERSION, "%d.%d.%d", major_version, minor_version, build_version);
     if (3 != ret) {
         printf("Version format invalid! (Error: %d)\n", ret);
-        return OSAL_MODULE_LOG | 2;
+        return MODULE_LOG | 2;
     }
 
     return 0;
@@ -276,13 +294,13 @@ OS_S32 OSAL_LOG_Get_Module_Version(OS_U32 *major_version, OS_U32 *minor_version,
  *            -> 志级别超过范围
  */
 /* --------------------------------------------------------------------------*/
-OS_S32 OSAL_LOG(OS_U32 module, OS_U32 level, OS_S8 *file, OS_S8 *func, OS_U32 line, OS_S8 *fmt, ...)
+OS_S32 OSAL_LOG(OS_U32 module, OS_U32 level, const OS_S8 *file, const OS_S8 *func, OS_U32 line, OS_S8 *fmt, ...)
 {
     va_list args;
     OS_S8 buffer[OSAL_LOG_BUF_SIZE];
 
     if (level > g_log_level) {
-        return OSAL_MODULE_LOG | 1;
+        return MODULE_LOG | 1;
     }
 
     memset(buffer, 0, OSAL_LOG_BUF_SIZE);
@@ -291,11 +309,8 @@ OS_S32 OSAL_LOG(OS_U32 module, OS_U32 level, OS_S8 *file, OS_S8 *func, OS_U32 li
     __log_vsnprintf(buffer, OSAL_LOG_BUF_SIZE, fmt, args);
     va_end(args);
 
-    log_sprintf("%s %s%s: %s(%s)+%d: ", get_process_name(), OS_Get_Module_Name(module), log_get_level_str(level), \
+    log_sprintf("%s %s%s: %s (%s)+%d: %s", get_process_name(), OS_Get_Module_Name(module), log_get_level_str(level), \
                 file, func, line, buffer);
-#if 0
-
-#endif
     return 0;
 }
 
@@ -318,7 +333,7 @@ OS_S32 OSAL_LOG_Set_Head(OS_U32 idx, OS_S8 *fmt, ...)
     va_list args;
 
     if (idx > 7) {
-        return OSAL_MODULE_LOG | 1;
+        return MODULE_LOG | 1;
     }
 
     va_start(args, fmt);
@@ -347,10 +362,10 @@ OS_S32 OSAL_LOG_Set_Head(OS_U32 idx, OS_S8 *fmt, ...)
 OS_S32 OSAL_LOG_Get_Level(OS_U32 *level)
 {
     if (NULL == level) {
-        return OSAL_MODULE_LOG | 1;
+        return MODULE_LOG | 1;
     }
     if (g_log_level > OSAL_LOG_DEBUG) {
-        return OSAL_MODULE_LOG | 2;
+        return MODULE_LOG | 2;
     }
 
     *level = g_log_level;
@@ -373,7 +388,7 @@ OS_S32 OSAL_LOG_Get_Level(OS_U32 *level)
 OS_S32 OSAL_LOG_Set_Level(OS_U32 level)
 {
     if (level > OSAL_LOG_DEBUG) {
-        return OSAL_MODULE_LOG | 1;
+        return MODULE_LOG | 1;
     }
 
     g_log_level = level;
@@ -396,7 +411,7 @@ OS_S32 OSAL_LOG_Set_Level(OS_U32 level)
 OS_S32 OSAL_LOG_Register_Callback(void (*callback)(OS_S8 *))
 {
     if (NULL == callback) {
-        return OSAL_MODULE_LOG | 1;
+        return MODULE_LOG | 1;
     }
 
     g_process_callback = callback;
@@ -486,6 +501,7 @@ OS_S32 OSAL_LOG_API_Test(void)
 #endif
     /* 设置级别 */
     ret |= OSAL_LOG_Set_Level(OSAL_LOG_DEBUG);
+
 #if 0
     /* 设置日志前缀， 也可以不填充 */
     for (i = 0; i < 8; i++) {
@@ -494,31 +510,32 @@ OS_S32 OSAL_LOG_API_Test(void)
 #endif
     /* 逐级别测试 */
     ret |= OSAL_LOG_Set_Level(OSAL_LOG_PANIC);
-    ret |= OSAL_LOG(OSAL_LOG_PANIC, "You should see it\n");
+    LOGP(MODULE_LOG, "You should see it\n");
 
-    ret |= OSAL_LOG(OSAL_LOG_FATAL, "You should not see it\n");
+    LOGF(MODULE_LOG, "You should not see it\n");
     ret |= OSAL_LOG_Set_Level(OSAL_LOG_FATAL);
-    ret |= OSAL_LOG(OSAL_LOG_FATAL, "You should see it\n");
+    LOGP(MODULE_LOG, "You should see it\n");
 
-    ret |= OSAL_LOG(OSAL_LOG_ERROR, "You should not see it\n");
+    LOGE(MODULE_LOG, "You should not see it\n");
     ret |= OSAL_LOG_Set_Level(OSAL_LOG_ERROR);
-    ret |= OSAL_LOG(OSAL_LOG_ERROR, "You should see it\n");
+    LOGE(MODULE_LOG, "You should see it\n");
 
-    ret |= OSAL_LOG(OSAL_LOG_WARNING, "You should not see it\n");
+    LOGW(MODULE_LOG, "You should not see it\n");
     ret |= OSAL_LOG_Set_Level(OSAL_LOG_WARNING);
-    ret |= OSAL_LOG(OSAL_LOG_WARNING, "You should see it\n");
+    LOGW(MODULE_LOG, "You should see it\n");
 
-    ret |= OSAL_LOG(OSAL_LOG_INFO, "You should not see it\n");
+
+    LOGI(MODULE_LOG, "You should not see it\n");
     ret |= OSAL_LOG_Set_Level(OSAL_LOG_INFO);
-    ret |= OSAL_LOG(OSAL_LOG_INFO, "You should see it\n");
+    LOGI(MODULE_LOG, "You should see it\n");
 
-    ret |= OSAL_LOG(OSAL_LOG_VERBOSE, "You should not see it\n");
+    LOGV(MODULE_LOG, "You should not see it\n");
     ret |= OSAL_LOG_Set_Level(OSAL_LOG_VERBOSE);
-    ret |= OSAL_LOG(OSAL_LOG_VERBOSE, "You should see it\n");
+    LOGV(MODULE_LOG, "You should see it\n");
 
-    ret |= OSAL_LOG(OSAL_LOG_DEBUG, "You should not see it\n");
+    LOGD(MODULE_LOG, "You should not see it\n");
     ret |= OSAL_LOG_Set_Level(OSAL_LOG_DEBUG);
-    ret |= OSAL_LOG(OSAL_LOG_DEBUG, "You should see it\n");
+    LOGD(MODULE_LOG, "You should see it\n");
 #if 0
     /* 写入日志文件 */
     ret |= OSAL_LOG_Write_To_File("/tmp/watchdog.txt", "OSAL_LOG Version %d.%d.%d write success\n", major_version,
