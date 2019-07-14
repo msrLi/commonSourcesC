@@ -39,16 +39,14 @@ typedef double                      OS_D64;
 typedef int                         OS_BOOL;
 typedef void*                       OS_HANDLE;
 
-typedef struct OS_RECT_TAG
-{
+typedef struct OS_RECT_TAG {
     OS_U32 left;
     OS_U32 right;
     OS_U32 top;
     OS_U32 bottom;
 } OS_RECT_T;
 
-typedef struct OS_RECT_U16_TAG
-{
+typedef struct OS_RECT_U16_TAG {
     OS_U16 left;
     OS_U16 right;
     OS_U16 top;

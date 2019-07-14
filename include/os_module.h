@@ -20,8 +20,7 @@ extern "C" {
 #endif
 
 /* 模块号定义， 便于通过错误返回值快速定位模块 */
-typedef enum E_MODULE
-{
+typedef enum E_MODULE {
     E_MODULE_LOG = 0,       /* 日志模块 */
     E_MODULE_RTC,           /* RTC模块 */
     E_MODULE_I2C,           /* I2C模块 */
@@ -77,8 +76,7 @@ typedef enum E_MODULE
     E_MODULE_AUTO_TEST,     /* 自动测试模块 */
 } E_MODULE;
 
-typedef struct MODULE_SHORT_NAME_TAG
-{    
+typedef struct MODULE_SHORT_NAME_TAG {
     OS_U32 module;
     const char *name;
 } MODULE_SHORT_NAME_T;

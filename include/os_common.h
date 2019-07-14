@@ -54,7 +54,6 @@
 #include "os_typedef.h"
 #include "os_fault.h"
 #include "os_module.h"
-#include "os_log.h"
 
 #define SUCCEED(rc)                 ((rc) == NO_ERROR)
 #define ISNULL(ptr)                 ((ptr) == NULL)
@@ -66,8 +65,8 @@
 #define ARRAYSIZE(array)            (sizeof(array) / sizeof(array[0]))
 #define INVALIDNUM                  (-1)
 #define EQUALPTR(a, b)              ((a) == (b))
-#define MAX(a, b)                   ((a) > (b) ? (a) : (b))
-#define MIN(a, b)                   ((a) < (b) ? (a) : (b))
+// #define MAX(a, b)                   ((a) > (b) ? (a) : (b))
+// #define MIN(a, b)                   ((a) < (b) ? (a) : (b))
 #define RESETRESULT(rc)             ((rc) = NO_ERROR)
 #define RETURNIGNORE(rc, ignore)    ((rc) & (~(ignore)))
 #define SUCCEEDIGNORE(rc, ignore)   (SUCCEED(rc) || ((rc) == (ignore)))

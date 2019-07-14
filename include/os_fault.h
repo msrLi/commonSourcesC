@@ -19,9 +19,8 @@
 extern "C" {
 #endif //__cplusplus
 
-typedef enum FAULT_ENUM
-{
-    NO_ERROR = 0, 
+typedef enum FAULT_ENUM {
+    NO_ERROR = 0,
     PERM_DENIED,
     NOT_READY,
     PARAM_INVALID,
@@ -41,7 +40,7 @@ typedef enum FAULT_ENUM
     JUMP_DONE,
     TEST_FAILED,
     UNKNOWN_ERROR,
-}FAULT_E;
+} FAULT_E;
 
 #ifdef __cplusplus
 }
