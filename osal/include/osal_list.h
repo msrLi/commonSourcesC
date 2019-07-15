@@ -1,8 +1,9 @@
 #ifndef _OSAL_LIST_H
 #define _SOAL_LIST_H
 
-#define LIST_POISON1    (void *)0xE0000001
-#define LIST_POISON2    (void *)0xE0000003
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define prefatch(x)     //Do Nothing
 
@@ -15,6 +16,10 @@
 #define container_of(a, t, m) \
      ((t *)(((unsigned long)(a)) - member_off(t, m)))
 #endif
+
+
+#define LIST_POISON1  ((void *) 0x00100100)
+#define LIST_POISON2  ((void *) 0x00200200)
 /*
  * Simple doubly linked list implementation.
  *
@@ -41,46 +46,46 @@ static inline void INIT_LIST_HEAD(struct list_head *list)
 }
 
 /*
- * Insert a new entry between two known consecutive entries.
+ * Insert a news entry between two known consecutive entries.
  *
  * This is only for internal list manipulation where we know
  * the prev/next entries already!
  */
-static inline void __list_add(struct list_head *new,
+static inline void __list_add(struct list_head *news,
                               struct list_head *prev,
                               struct list_head *next)
 {
-    next->prev = new;
-    new->next = next;
-    new->prev = prev;
-    prev->next = new;
+    next->prev = news;
+    news->next = next;
+    news->prev = prev;
+    prev->next = news;
 }
 
 /**
- * list_add - add a new entry
- * @new: new entry to be added
+ * list_add - add a news entry
+ * @news: news entry to be added
  * @head: list head to add it after
  *
- * Insert a new entry after the specified head.
+ * Insert a news entry after the specified head.
  * This is good for implementing stacks.
  */
-static inline void list_add(struct list_head *new, struct list_head *head)
+static inline void list_add(struct list_head *news, struct list_head *head)
 {
-    __list_add(new, head, head->next);
+    __list_add(news, head, head->next);
 }
 
 
 /**
- * list_add_tail - add a new entry
- * @new: new entry to be added
+ * list_add_tail - add a news entry
+ * @news: news entry to be added
  * @head: list head to add it before
  *
- * Insert a new entry before the specified head.
+ * Insert a news entry before the specified head.
  * This is useful for implementing queues.
  */
-static inline void list_add_tail(struct list_head *new, struct list_head *head)
+static inline void list_add_tail(struct list_head *news, struct list_head *head)
 {
-    __list_add(new, head->prev, head);
+    __list_add(news, head->prev, head);
 }
 
 /*
@@ -105,31 +110,31 @@ static inline void __list_del(struct list_head * prev, struct list_head * next)
 static inline void list_del(struct list_head *entry)
 {
     __list_del(entry->prev, entry->next);
-    entry->next = LIST_POISON1;
-    entry->prev = LIST_POISON2;
+    entry->next = (struct list_head*) LIST_POISON1;
+    entry->prev = (struct list_head*) LIST_POISON2;
 }
 
 
 /**
- * list_replace - replace old entry by new one
+ * list_replace - replace old entry by news one
  * @old : the element to be replaced
- * @new : the new element to insert
+ * @news : the news element to insert
  *
  * If @old was empty, it will be overwritten.
  */
 static inline void list_replace(struct list_head *old,
-                                struct list_head *new)
+                                struct list_head *news)
 {
-    new->next = old->next;
-    new->next->prev = new;
-    new->prev = old->prev;
-    new->prev->next = new;
+    news->next = old->next;
+    news->next->prev = news;
+    news->prev = old->prev;
+    news->prev->next = news;
 }
 
 static inline void list_replace_init(struct list_head *old,
-                                     struct list_head *new)
+                                     struct list_head *news)
 {
-    list_replace(old, new);
+    list_replace(old, news);
     INIT_LIST_HEAD(old);
 }
 
@@ -217,18 +222,18 @@ static inline OS_S32 list_is_singular(const struct list_head *head)
 static inline void __list_cut_position(struct list_head *list,
                                        struct list_head *head, struct list_head *entry)
 {
-    struct list_head *new_first = entry->next;
+    struct list_head *news_first = entry->next;
     list->next = head->next;
     list->next->prev = list;
     list->prev = entry;
     entry->next = list;
-    head->next = new_first;
-    new_first->prev = head;
+    head->next = news_first;
+    news_first->prev = head;
 }
 
 /**
  * list_cut_position - cut a list into two
- * @list: a new list to add all removed entries
+ * @list: a news list to add all removed entries
  * @head: a list with entries
  * @entry: an entry within head, could be the head itself
  *  and if so we won't cut the list
@@ -273,7 +278,7 @@ static inline void __list_splice(const struct list_head *list,
 
 /**
  * list_splice - join two lists, this is designed for stacks
- * @list: the new list to add.
+ * @list: the news list to add.
  * @head: the place to add it in the first list.
  */
 static inline void list_splice(const struct list_head *list,
@@ -286,7 +291,7 @@ static inline void list_splice(const struct list_head *list,
 
 /**
  * list_splice_tail - join two lists, each list being a queue
- * @list: the new list to add.
+ * @list: the news list to add.
  * @head: the place to add it in the first list.
  */
 static inline void list_splice_tail(struct list_head *list,
@@ -299,7 +304,7 @@ static inline void list_splice_tail(struct list_head *list,
 
 /**
  * list_splice_init - join two lists and reinitialise the emptied list.
- * @list: the new list to add.
+ * @list: the news list to add.
  * @head: the place to add it in the first list.
  *
  * The list at @list is reinitialised
@@ -315,7 +320,7 @@ static inline void list_splice_init(struct list_head *list,
 
 /**
  * list_splice_tail_init - join two lists and reinitialise the emptied list
- * @list: the new list to add.
+ * @list: the news list to add.
  * @head: the place to add it in the first list.
  *
  * Each of the lists is a queue.
@@ -582,8 +587,8 @@ static inline void __hlist_del(struct hlist_node *n)
 static inline void hlist_del(struct hlist_node *n)
 {
     __hlist_del(n);
-    n->next = LIST_POISON1;
-    n->pprev = LIST_POISON2;
+    n->next = (hlist_node*) LIST_POISON1;
+    n->pprev = (hlist_node**) LIST_POISON2;
 }
 
 static inline void hlist_del_init(struct hlist_node *n)
@@ -632,11 +637,11 @@ static inline void hlist_add_after(struct hlist_node *n,
  * reference of the first entry if it exists.
  */
 static inline void hlist_move_list(struct hlist_head *old,
-                                   struct hlist_head *new)
+                                   struct hlist_head *news)
 {
-    new->first = old->first;
-    if (new->first) {
-        new->first->pprev = &new->first;
+    news->first = old->first;
+    if (news->first) {
+        news->first->pprev = &news->first;
     }
     old->first = NULL;
 }
@@ -700,5 +705,9 @@ static inline void hlist_move_list(struct hlist_head *old,
          pos && ({ n = pos->next; 1; }) &&               \
         ({ tpos = hlist_entry(pos, typeof(*tpos), member); 1;}); \
          pos = n)
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // _OSAL_LIST_H
