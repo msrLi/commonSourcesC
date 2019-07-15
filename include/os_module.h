@@ -21,15 +21,22 @@ extern "C" {
 
 /* 模块号定义， 便于通过错误返回值快速定位模块 */
 typedef enum E_MODULE {
+    /***********  osal  ************/
     E_MODULE_LOG = 0,       /* 日志模块 */
+
+    /***********   hal  ************/
     E_MODULE_RTC,           /* RTC模块 */
     E_MODULE_I2C,           /* I2C模块 */
     E_MODULE_SPI,           /* SPI模块 */
     E_MODULE_UART,          /* UART模块 */
-    E_MODULE_FPGA,          /* FPGA模块 */
     E_MODULE_EEPROM,        /* EEPROM模块 */
-    E_MODULE_VIN,           /* Video输入/采集模块 */
     E_MODULE_GPIO,          /* GPIO 模块 */
+
+    /*********** middle ************/
+    E_MODULE_CRYPTO,        /* 加密相关模块 */
+
+    E_MODULE_FPGA,          /* FPGA模块 */
+    E_MODULE_VIN,           /* Video输入/采集模块 */
     E_MODULE_TEMPERATURE,   /* 温度传感器模块 */
     E_MODULE_LOCAL_BUS,     /* 本地总线模块 */
     E_MODULE_JPEG_SW,       /* jpeg编解码模块 */
@@ -71,7 +78,6 @@ typedef enum E_MODULE {
     E_MODULE_IRIS,          /* 自动光圈模块 */
     E_MODULE_SIL1227,       /* sil1127模块 */
     E_MODULE_MACHXO2,       /* Machxo2 cpld 模块 */
-    E_MODULE_CRYPTO,        /* 加密相关模块 */
     E_MODULE_DIR,           /* 目录相关操作模块 */
     E_MODULE_AUTO_TEST,     /* 自动测试模块 */
 } E_MODULE;
