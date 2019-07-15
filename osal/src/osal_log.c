@@ -1,11 +1,11 @@
 /**
  * @file osal_log.c
  * @brief  日志功能相关API
- * @author  <itarge@itarge.com>
+ * @author  <binsonli666@icloud.com>
  * @version 1.0.0
  * @date 2017-03-14
  */
-/* Copyright (C) 2008-2016, Itarge Inc.
+/* Copyright (C) 2008-2016, BinsonLi Inc.
  * All right reserved
  *
  */
