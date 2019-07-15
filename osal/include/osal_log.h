@@ -128,6 +128,16 @@ do {                                                \
     PLOGX(module, OSAL_LOG_DEBUG, fmt, ##args);     \
 }while(0)
 
+#define OSAL_CHECK_ERROR(cond, retval, lable,                   \
+module, fmt, args...)                                           \
+do {                                                            \
+    if(cond) {                                                  \
+        LOGE(module, fmt, ##args);                              \
+        ret = retval;                                           \
+        goto lable;                                             \
+    }                                                           \
+} while(0)
+
 
 /* --------------------------------------------------------------------------*/
 /**

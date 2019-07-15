@@ -298,7 +298,7 @@ OS_S32 OSAL_LOG_Get_Module_Version(OS_U32 *major_version, OS_U32 *minor_version,
  *            -> 志级别超过范围
  */
 /* --------------------------------------------------------------------------*/
-OS_S32 OSAL_LOG(OS_U32 module, OS_U32 level, const OS_S8 *file, const OS_S8 *func, OS_U32 line,const OS_S8 *fmt, ...)
+OS_S32 OSAL_LOG(OS_U32 module, OS_U32 level, const OS_S8 *file, const OS_S8 *func, OS_U32 line, const OS_S8 *fmt, ...)
 {
     va_list args;
     OS_S8 buffer[OSAL_LOG_BUF_SIZE];
