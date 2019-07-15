@@ -21,6 +21,7 @@ extern "C"
 #include <osal_log.h>
 #include <osal_list.h>
 #include <osal_error.h>
+#include <osal_dir.h>
 
 #ifdef __cplusplus
 } //extern "C" {
