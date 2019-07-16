@@ -11,7 +11,11 @@
  */
 
 #include <os_common.h>
-#include <osal.h>
+#include <osal_file.h>
+#include <osal_log.h>
+#include <osal_dir.h>
+
+
 
 /* DIR 模块的版本号, 代码有修改时必须修改 */
 #define OSAL_DIR_MODULE_VERSION  ("1.2.0")
@@ -50,12 +54,12 @@ OS_S32 OSAL_DIR_Get_Module_Version(OS_U32 *major_version, OS_U32 *minor_version,
     LOGI(OSAL_LOG_INFO, "%s: %s\n", __func__, OSAL_DIR_MODULE_VERSION);
 
     /* 参数检查 */
-    OSAL_CHECK_ERROR((!major_version) || (!minor_version) || (!build_version), 1, return_err, MODULE_DIR,
+    OSAL_CHECK_ERROR(MODULE_DIR, (!major_version) || (!minor_version) || (!build_version), 1, return_err,
                      "Invalid argument! (%p, %p, %p)\n", major_version, minor_version, build_version);
 
     /* 版本返回，便于上层应用通过版本号判断，实现差异化兼容处理 */
     ret = sscanf(OSAL_DIR_MODULE_VERSION, "%d.%d.%d", major_version, minor_version, build_version);
-    OSAL_CHECK_ERROR((3 != ret), 2, return_err, MODULE_DIR, "Version format invalid! (Error: %d)\n", ret);
+    OSAL_CHECK_ERROR(MODULE_DIR, (3 != ret), 2, return_err, "Version format invalid! (Error: %d)\n", ret);
 
     return 0;
 
@@ -84,8 +88,7 @@ OS_S32 OSAL_DIR_Create_Multi_Dir(OS_S8 *path)
     OS_S32 ret = 0;
 
     /* 参数检查 */
-    OSAL_CHECK_ERROR((!path), 1, return_err, MODULE_DIR, 
-                     "Invalid argument! (%p)\n", path);
+    OSAL_CHECK_ERROR(MODULE_DIR, (!path), 1, return_err, "Invalid argument! (%p)\n", path);
 
     strcpy(dir_name, path);
     len = strlen(dir_name);
@@ -101,7 +104,7 @@ OS_S32 OSAL_DIR_Create_Multi_Dir(OS_S8 *path)
             if (OSAL_FILE_Check_Exist(dir_name) != 0) {
                 umask(0);
                 ret = mkdir(dir_name, 0775);
-                OSAL_CHECK_ERROR((ret == -1), 2, return_err, MODULE_DIR, "mkdir() failed! (Error: %d)\n", ret);
+                OSAL_CHECK_ERROR(MODULE_DIR, (ret == -1), 2, return_err, "mkdir() failed! (Error: %d)\n", ret);
             }
             dir_name[i] = '/';
         }
@@ -165,7 +168,7 @@ OS_S32 OSAL_DIR_API_Test(OS_S32 argc, OS_S8 *argv[])
             case 'p':
                 path = optarg;
                 ret = OSAL_DIR_Create_Multi_Dir(path);
-                OSAL_CHECK_ERROR(ret, 2, return_err, MODULE_DIR, "Create directory %s failed! (Error: 0x%08x)\n", path, ret);
+                OSAL_CHECK_ERROR(MODULE_DIR, ret, 2, return_err, "Create directory %s failed! (Error: 0x%08x)\n", path, ret);
                 LOGD(MODULE_DIR, "Create directory: %s\n", path);
                 break;
             default:

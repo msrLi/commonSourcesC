@@ -13,18 +13,11 @@
 #ifndef __OSAL_H__
 #define __OSAL_H__
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
 
 #include <osal_log.h>
 #include <osal_list.h>
 #include <osal_error.h>
+#include <osal_file.h>
 #include <osal_dir.h>
-
-#ifdef __cplusplus
-} //extern "C" {
-#endif
 
 #endif //__ITE_OSAL_H__

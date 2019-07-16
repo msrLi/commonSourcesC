@@ -34,6 +34,7 @@ typedef enum E_MODULE {
 
     /*********** middle ************/
     E_MODULE_CRYPTO,        /* 加密相关模块 */
+    E_MODULE_FILE,          /* 文件操作模块 */
     E_MODULE_DIR,           /* 目录相关操作模块 */
 
     E_MODULE_FPGA,          /* FPGA模块 */
@@ -72,7 +73,7 @@ typedef enum E_MODULE {
     E_MODULE_RESIZE,        /* 图片缩放模块 */
     E_MODULE_VERSION,       /* 版本信息获取模块 */
     E_MODULE_BOARD_TEST,    /* 硬件测试模块 */
-    E_MODULE_FILE,          /* 文件操作模块 */
+
     E_MODULE_LED,           /* LED模块 */
     E_MODULE_COMPRESS,      /* 压缩解压缩模块 */
     E_MODULE_PWM,           /* PWM模块 */
