@@ -23,6 +23,9 @@ extern "C" {
 typedef enum E_MODULE {
     /***********  osal  ************/
     E_MODULE_LOG = 0,       /* 日志模块 */
+    E_MODULE_FILE,          /* 文件操作模块 */
+    E_MODULE_DIR,           /* 目录相关操作模块 */
+    E_MODULE_IPC,           /* 核间通讯模块 */
 
     /***********   hal  ************/
     E_MODULE_RTC,           /* RTC模块 */
@@ -34,8 +37,7 @@ typedef enum E_MODULE {
 
     /*********** middle ************/
     E_MODULE_CRYPTO,        /* 加密相关模块 */
-    E_MODULE_FILE,          /* 文件操作模块 */
-    E_MODULE_DIR,           /* 目录相关操作模块 */
+
 
     E_MODULE_FPGA,          /* FPGA模块 */
     E_MODULE_VIN,           /* Video输入/采集模块 */
@@ -60,7 +62,7 @@ typedef enum E_MODULE {
     E_MODULE_UPGRADE,       /* 升级模块 */
     E_MODULE_UPGRADE_SERVER,       /* 升级模块 服务器*/
     E_MODULE_MTD,           /* MTD模块 */
-    E_MODULE_IPC,           /* 核间通讯模块 */
+
     E_MODULE_NET,           /* NET模块 */
     E_MODULE_SOCKET,        /* SOCKET模块 */
     E_MODULE_HASHCMD,       /* HASHCMD模块 */

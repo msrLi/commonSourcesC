@@ -124,7 +124,7 @@
         }                                        \
         _result;                                 \
     })
-
+#if 0 
 #ifndef offsetof
 #define offsetof(TYPE, MEMBER)                   \
     ((size_t) &((TYPE *)0)->MEMBER)
@@ -134,6 +134,7 @@
         const typeof(((type *)0)->member) *__mptr = (ptr); \
         (type *)((char *)__mptr - offsetof(type, member)); \
     })
+#endif
 
 #define ALIGN_LEN_TO_SIZE(len,size) ({                     \
         (((len) + (size) - 1) & ~((size) - 1)); });
