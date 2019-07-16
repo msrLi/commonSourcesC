@@ -124,7 +124,7 @@
         }                                        \
         _result;                                 \
     })
-#if 0 
+#if 0
 #ifndef offsetof
 #define offsetof(TYPE, MEMBER)                   \
     ((size_t) &((TYPE *)0)->MEMBER)

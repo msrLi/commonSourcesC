@@ -26,6 +26,7 @@ typedef enum E_MODULE {
     E_MODULE_FILE,          /* 文件操作模块 */
     E_MODULE_DIR,           /* 目录相关操作模块 */
     E_MODULE_IPC,           /* 核间通讯模块 */
+    E_MODULE_LOCK,          /* 线程锁模块 */
 
     /***********   hal  ************/
     E_MODULE_RTC,           /* RTC模块 */
@@ -48,7 +49,7 @@ typedef enum E_MODULE {
     E_MODULE_SHM,           /* 共享内存模块 */
     E_MODULE_MSG,           /* 消息队列模块 */
     E_MODULE_SEM,           /* Posix信号量模块 */
-    E_MODULE_LOCK,          /* 线程锁模块 */
+
     E_MODULE_TASK,          /* 任务模块 */
     E_MODULE_SWOSD,         /* 软件OSD */
     E_MODULE_ISP,           /* 图像处理模块 */

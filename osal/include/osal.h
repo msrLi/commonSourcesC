@@ -19,5 +19,6 @@
 #include <osal_error.h>
 #include <osal_file.h>
 #include <osal_dir.h>
+#include <osal_lock.h>
 
 #endif //__ITE_OSAL_H__
