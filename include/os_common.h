@@ -34,6 +34,7 @@
 #include <sys/stat.h>
 #include <sys/sysinfo.h>    /* sysinfo函数, 获取系统运行时间 */
 #include <sys/ipc.h>        /* 核间通讯 */
+#include <sys/shm.h>        /* 核间通讯 */
 #include <sys/msg.h>
 #include <sys/sem.h>
 #include <semaphore.h>

@@ -20,5 +20,6 @@
 #include <osal_file.h>
 #include <osal_dir.h>
 #include <osal_lock.h>
+#include <osal_shm.h>
 
 #endif //__ITE_OSAL_H__
