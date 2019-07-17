@@ -9,9 +9,6 @@
 #ifndef __OSAL_OBJECT__
 #define __OSAL_OBJECT__
 
-#include <os_common.h>
-#include "osal_list.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -31,7 +28,7 @@ extern "C" {
 /******************************************************************************
 * Global function
 ******************************************************************************/
-OS_HANDLE osal_obj_request(OS_U32 size, OS_S8 * name, OS_U32 type);
+OS_HANDLE osal_obj_request(OS_U32 size, const OS_S8 * name, OS_U32 type);
 
 void osal_obj_release(OS_HANDLE object);
 

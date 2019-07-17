@@ -28,6 +28,7 @@ typedef enum E_MODULE {
     E_MODULE_IPC,           /* 核间通讯模块 */
     E_MODULE_LOCK,          /* 线程锁模块 */
     E_MODULE_SHM,           /* 共享内存模块 */
+    E_MODULE_NET,           /* NET模块 */
 
     /***********   hal  ************/
     E_MODULE_RTC,           /* RTC模块 */
@@ -65,7 +66,7 @@ typedef enum E_MODULE {
     E_MODULE_UPGRADE_SERVER,       /* 升级模块 服务器*/
     E_MODULE_MTD,           /* MTD模块 */
 
-    E_MODULE_NET,           /* NET模块 */
+
     E_MODULE_SOCKET,        /* SOCKET模块 */
     E_MODULE_HASHCMD,       /* HASHCMD模块 */
     E_MODULE_MEMCPY,        /* MEMCPY模块 */

@@ -11,7 +11,7 @@
  */
 
 #include <os_common.h>
-#include <osal_log.h>
+#include <osal.h>
 #include "osal_object.h"
 
 /******************************************************************************
@@ -25,7 +25,7 @@ typedef struct OSAL_OBJ_TAG {
     OS_U8            priv[0];   /* Êý¾ÝÖ¸Õë */
 } OSAL_OBJ_T;
 
-OS_HANDLE osal_obj_request(OS_U32 size, OS_S8 * name, OS_U32 type)
+OS_HANDLE osal_obj_request(OS_U32 size, const OS_S8 * name, OS_U32 type)
 {
     OSAL_OBJ_T *obj = NULL;
     OS_HANDLE ret = 0;

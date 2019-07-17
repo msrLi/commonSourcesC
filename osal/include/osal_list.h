@@ -1,5 +1,5 @@
-#ifndef _OSAL_LIST_H
-#define _SOAL_LIST_H
+#ifndef _OSAL_LIST_H_
+#define _SOAL_LIST_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -710,4 +710,4 @@ static inline void hlist_move_list(struct hlist_head *old,
 }
 #endif
 
-#endif // _OSAL_LIST_H
+#endif // _OSAL_LIST_H_
